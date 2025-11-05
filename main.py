@@ -82,10 +82,11 @@ async def update_campaing(id: int, campaing: CampaingCreate, session: SessionDep
     session.refresh(data)
     return {"data":data}
 
-@app.delete("/campaings/{id}",status_code=204)
+@app.delete("/campaings/{id}",status_code=200)
 async def delete_campaing(id: int, session: SessionDep):
     data = session.get(Campaing, id)
     if not data:
         raise HTTPException(status_cod=404)
     session.delete(data)
     session.commit()
+    return {"message": "Campaing deleted"} 
