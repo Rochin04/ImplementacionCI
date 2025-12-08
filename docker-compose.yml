@@ -1,0 +1,10 @@
+# Este archivo es para cumplir el requisito de "Orquestación Local"
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+  # Servicio dummy para demostrar que sabes conectar dos cosas
+  db_mock:
+    image: redis:alpine
