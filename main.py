@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI()
 @app.get("/")
 async def root():
-    return {"message": "Hello World!"}
+    return {"message": "Hello Devops"}
 
 T = TypeVar("T")
 class Respons(BaseModel, Generic[T]):
@@ -89,4 +89,4 @@ async def delete_campaing(id: int, session: SessionDep):
         raise HTTPException(status_cod=404)
     session.delete(data)
     session.commit()
-    return {"message": "Campaing deleted"} 
+    return {"message": "Campaing deleted correct"} 

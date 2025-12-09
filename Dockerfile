@@ -1,4 +1,3 @@
-# Este archivo es para cumplir el requisito de "Contenerización"
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
