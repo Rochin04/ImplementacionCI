@@ -4,6 +4,9 @@ services:
     build: .
     ports:
       - "5000:5000"
-  # Servicio dummy para demostrar que sabes conectar dos cosas
+    volumes:
+      # Esto conecta el archivo de tu PC con el del contenedor
+      - ./database.db:/app/database.db
+  
   db_mock:
     image: redis:alpine

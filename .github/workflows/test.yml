@@ -1,7 +1,5 @@
-# Nombre del workflow
 name: Python Tests and Deploy
 
-# Configura cuándo se debe ejecutar
 on:
   push:
     branches: [ "main" ]
@@ -29,10 +27,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Paso 4: Run tests
+    # Paso 4: Run tests (Esto crea y BORRA la db de prueba)
     - name: Run tests with pytest
       run: |
         pytest
+
+    # --- FASE DE PREPARACIÓN DE ARTEFACTOS ---
+
+    # Paso 4.5: Generar la Base de Datos para Producción
+    # Este paso vuelve a crear el archivo database.db para que Docker lo pueda copiar
+    - name: Generate Production Database
+      if: github.event_name == 'push'
+      run: |
+        # Ejecutamos una línea de python que importa tu función y crea las tablas
+        python -c "from main import create_db_and_tables; create_db_and_tables()"
+
+        # Opcional: Verificar que se creó
+        ls -l database.db
 
     # --- FASE DE DESPLIEGUE ---
 
@@ -45,6 +56,8 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # Paso 6: Build & Push
+    # Aquí es donde ocurre la magia. Al usar 'context: .', Docker copiará el database.db
+    # generado en el paso anterior dentro de la imagen.
     - name: Build and push Docker image
       if: github.event_name == 'push'
       uses: docker/build-push-action@v5
@@ -54,9 +67,8 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/fastfeast-api:latest
 
     # Paso 7: Deploy en Render
+    # Render recibe la señal, descarga la imagen y ejecuta el "docker run" en su nube.
     - name: Trigger Render Deploy
       if: github.event_name == 'push'
       run: |
         curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
-
-#test3
