@@ -45,7 +45,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI()
 @app.get("/")
 async def root():
-    return {"message": "Hello Devops CI/CD"}
+    return {"message": "Hello Devops CI/CD completo"}
 
 T = TypeVar("T")
 class Respons(BaseModel, Generic[T]):
